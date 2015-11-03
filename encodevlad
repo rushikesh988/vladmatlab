@@ -1,0 +1,39 @@
+function vladDescriptor =encodevlad(visualWords,imageDescriptors)
+% VLAD is a extension of Bag of Words.
+%This function computes VLAD descriptors by using information such as
+%visual words and image descriptors.
+%
+%Visual Words has size of no_of_words x no_of_dimensions_of_descriptors   
+%
+%no_of_dimensions_of_descriptors depends on the descriptor you are using
+%for example for SIFT its 128 for SURF its 64. 
+%
+%imageDescriptors has size of no_of_descriptors_detected x no_of_dimensions_of_descriptors(same as above)  
+
+
+result_array=zeros(size(visualWords,1),128);
+for i=1:size(imageDescriptors,1)
+    x=imageDescriptors(i,:);
+    [nn,~] = knnsearch(visualWords,x); 
+    ci=visualWords(nn(1),:);
+    for j=1:size(visualWords,2) 
+         
+   result_array(nn(1),j)=result_array(nn(1),j)+(x(j)-ci(j));
+        
+        
+    end
+end
+    
+result_vector=[];
+for i=1:size(result_array,1)
+   
+  result_vector=[result_vector result_array(i,:)]  ;
+    
+end
+
+vladDescriptor=result_vector/norm(result_vector);
+
+
+
+
+end
